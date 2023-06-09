@@ -1,5 +1,5 @@
 # Coinify
-It provides an interactive no-code platform that allows users to create a community token and NFT memberships. Coinverse supports a unique niche of the VENOM chain which enables sustainability and empowers creators to build thriving web3 communities. We desire to provide a launchpad that simplifies community, monetization, and growth.
+It provides an interactive no-code platform that allows users to create a community token and NFT memberships. Coinify supports a unique niche of the VENOM chain which enables sustainability and empowers creators to build thriving web3 communities. We desire to provide a launchpad that simplifies community, monetization, and growth.
 
 ## Prerequisites
 
