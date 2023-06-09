@@ -9,6 +9,10 @@ import Button from "../components/form-elements/Button";
 import { useToast } from "@chakra-ui/react";
 // import { contractAddress } from "@/utils/constants";
 import { Checkbox, CheckboxGroup } from "@chakra-ui/react";
+import tokenAbi from "../abi/Token.abi.json";
+import { Address, ProviderRpcClient } from "everscale-inpage-provider";
+import BigNumber from "bignumber.js";
+
 
 const Dashboard = () => {
   const [name, setName] = useState("");
@@ -18,8 +22,61 @@ const Dashboard = () => {
   const [whitelist, setWhitelist] = useState([]);
   const [capFlag, setCapFlag] = useState(true);
   const [supplyFlag, setSupplyFlag] = useState(true);
+  const [venomConnect, setVenomConnect] = useState<any>();
+  const [wallet, setWallet] = useState();
+  const [tokenAmount, setTokenAmount] = useState<number | undefined>(0);
 
+
+  const login = async () => {
+    if (!venomConnect) return;
+   const res =  await venomConnect.connect();
+    setVenomConnect(res)
+  };
+
+  const getAddress = async (provider: any) => {
+    const providerState = await provider?.getProviderState?.();
+
+    const address =
+      providerState?.permissions.accountInteraction?.address.toString();
+
+    // console.log("Step 5: Got Address", address);
+    setWallet(address);
+    return address;
+  };
 //   const { address } = useAccount();
+
+const buyTokens = async () => {
+  
+  // if (!venomConnect || !wallet || !tokenAmount) return;
+  //@ts-ignore
+  const userAddress = new Address(wallet);
+  const contractAddress = new Address("0:fac0dea61ab959bf5fc5d325b6ef97ef45ef371c8649042e92b64e46c3c854d5"); // Our Tokensale contract address
+  //@ts-ignore
+  const deposit = new BigNumber(tokenAmount).multipliedBy(10 ** 8).toString(); // Contract"s rate parameter is 1 venom = 10 tokens
+  const provider = await login()
+  try {
+
+  //@ts-ignore
+  const contract = new provider.Contract(tokenAbi, contractAddress);
+  const amount = new BigNumber(deposit).plus(new BigNumber(1).multipliedBy(10 ** 9)).toString();
+    // and just call buyTokens method according to smart contract
+    const result = await contract.methods
+      .buyTokens({
+        deposit,
+      } as never)
+      .send({
+        from: userAddress,
+        amount,
+        bounce: true,
+      });
+    if (result?.id?.lt && result?.endStatus === "active") {
+      setTokenAmount(1000000000);
+      // getBalance(address);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
   const toast = useToast();
 
@@ -119,7 +176,7 @@ const Dashboard = () => {
             label="Create"
             onClick={(e:any) => {
               e.preventDefault();
-              createToken();
+              buyTokens();
             }}
           />
         </form>
