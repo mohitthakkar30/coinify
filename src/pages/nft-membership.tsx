@@ -128,7 +128,7 @@ const Dashboard = () => {
             id="price"
             name="price"
             label="Price"
-            placeholder="1 5IRE"
+            placeholder="1 VENOM"
             type="number"
             onChange={(e:any) => setPrice(e.target.value)}
             helper="Recommend initial NFT Price - 2 VENOM, No 'VENOM' Symbol Required."
